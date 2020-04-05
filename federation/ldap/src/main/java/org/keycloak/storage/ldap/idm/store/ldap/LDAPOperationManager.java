@@ -25,6 +25,7 @@ import org.keycloak.models.ModelException;
 import org.keycloak.storage.ldap.LDAPConfig;
 import org.keycloak.storage.ldap.idm.model.LDAPDn;
 import org.keycloak.storage.ldap.idm.query.internal.LDAPQuery;
+import org.keycloak.storage.ldap.idm.store.ldap.extended.PasswordModifyRequest;
 import org.keycloak.storage.ldap.mappers.LDAPOperationDecorator;
 
 import javax.naming.AuthenticationException;
@@ -45,18 +46,13 @@ import javax.naming.ldap.LdapContext;
 import javax.naming.ldap.LdapName;
 import javax.naming.ldap.PagedResultsControl;
 import javax.naming.ldap.PagedResultsResponseControl;
-import javax.naming.ldap.StartTlsRequest;
 import javax.naming.ldap.StartTlsResponse;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.List;
-import java.util.Map;
-import java.util.Properties;
 import java.util.Set;
 
 /**
@@ -671,6 +667,25 @@ public class LDAPOperationManager {
             }
         }
         return entryUUID.toString();
+    }
+
+    /**
+     * Execute the LDAP Password Modify Extended Operation to update the password for the given DN.
+     *
+     * @param dn distinguished name of the entry.
+     * @param password the new password.
+     * @param decorator A decorator to apply to the ldap operation.
+     */
+
+    public void passwordModifyExtended(String dn, String password, LDAPOperationDecorator decorator) {
+        try {
+            execute(context -> {
+                PasswordModifyRequest modifyRequest = new PasswordModifyRequest(dn, null, password);
+                return context.extendedOperation(modifyRequest);
+            }, decorator);
+        } catch (NamingException e) {
+            throw new ModelException("Could not execute the password modify extended operation for DN [" + dn + "]", e);
+        }
     }
 
     private <R> R execute(LdapOperation<R> operation) throws NamingException {
