@@ -233,8 +233,9 @@ public class LDAPOperationManager {
 
     private String findNextDNForFallback(String newDn, int counter) {
         LDAPDn dn = LDAPDn.fromString(newDn);
-        String rdnAttrName = dn.getFirstRdnAttrName();
-        String rdnAttrVal = dn.getFirstRdnAttrValue();
+        LDAPDn.RDN firstRdn = dn.getFirstRdn();
+        String rdnAttrName = firstRdn.getAllKeys().get(0);
+        String rdnAttrVal = firstRdn.getAttrValue(rdnAttrName);
         LDAPDn parentDn = dn.getParentDn();
         parentDn.addFirst(rdnAttrName, rdnAttrVal + counter);
         return parentDn.toString();
