@@ -1,5 +1,6 @@
 html,body {
     height: 100%;
+    overflow: hidden;
 }
 
 form {
@@ -65,6 +66,34 @@ th.w-35 {
 
 th.w-40 {
     width: 40%;
+}
+
+/*********** KEYCLOAK-10927: fix scrolling issues ***********/
+.view-container {
+  height: calc(100vh - 56px);
+}
+
+.content-container {
+  height: 100%;
+  overflow: auto;
+}
+
+.sidebar-pf-left {
+  height: 100%;
+}
+
+@media (max-width: 767px) {
+  .view-container {
+    overflow: auto;
+  }
+
+  .content-container {
+    height: fit-content;
+  }
+
+  .sidebar-pf-left {
+    height: fit-content;
+  }
 }
 
 /*********** Loading ***********/

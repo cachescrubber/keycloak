@@ -89,7 +89,7 @@
 
 <div class="container-fluid">
 <div class="row">
-    <div data-ng-view id="view"></div>
+    <div data-ng-view id="view" class="view-container"></div>
 </div>
 </div>
 
